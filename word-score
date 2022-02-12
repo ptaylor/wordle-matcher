@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
 
+import sys
+import re
+
 def read_words(f):
     words = []
     with open(f,'r') as word_list:
@@ -79,6 +82,44 @@ def display_scores(scores):
    print("")
      
 
+def find_matching(words, pattern):
+
+    correct = set(re.sub(r"[^A-Z]", '', pattern))
+    misplaced = set(re.sub(r"[^a-z]", '', pattern))
+    all = list(re.sub(r"[^A-Za-z]", '', pattern).lower())
+    #print(f"correct {correct}, misplaced {misplaced}, all {all}")
+    reg_exp = ""
+    for p in pattern:
+        if p in correct:
+           reg_exp += f"{p.lower()}"
+        elif p in misplaced:
+           reg_exp += f"[^{p}]"
+        else:
+           reg_exp += "."
+
+    #print(f"re {reg_exp}")
+
+    matched_words = [w for w in words if re.search(reg_exp, w)]
+    
+    #print(f"Found {len(matched_words)} matching (step 1)")
+
+    matched_words = [w for w in matched_words if contains(w, all)]
+    
+    print(f"Found {len(matched_words)} matching words")
+    if len(matched_words) > 10 and len(matched_words) < 20:
+        for word in matched_words:
+            print(f"          {word.upper()}")
+
+def contains(word, letters):
+
+    #print(f"contains({word}, {letters})")
+    for letter in letters:
+        #print(f"{letter} in {word}")
+        if letter not in word:
+            return False
+        word = re.sub(letter, '?', word, count = 1)
+    return True
+
 def calculate_percent_histogram(frequency):
 
     pc_hist = dict()
@@ -112,9 +153,12 @@ def percent(max, v):
 words = read_words("words5.txt")
 frequency = letter_frequency(words)          
 pc_hist = calculate_percent_histogram(frequency)
-display_histogram(pc_hist) 
 
-scores = score_words(words, pc_hist)
-display_scores(scores)
+if len(sys.argv) > 1:
+    find_matching(words, sys.argv[1])
+else:
+    display_histogram(pc_hist) 
+    scores = score_words(words, pc_hist)
+    display_scores(scores)
 
    
