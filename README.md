@@ -1,6 +1,6 @@
 # Wordle Matcher
 
-Help solve (wordle)[https://www.powerlanguage.co.uk/wordle/]
+Help solve [wordle](https://www.powerlanguage.co.uk/wordle/)
 
 Usage:
 ```
