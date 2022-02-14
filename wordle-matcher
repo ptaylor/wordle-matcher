@@ -5,6 +5,7 @@ import re
 import os
 
 WORD_SIZE = 5
+WORDS_PER_LINE = 8
 MAX_WORD_SCORES = 5
 VOWELS = {'a', 'e', 'i', 'o', 'u', 'y'}
 FREQUENCY_SCORE_WEIGHT = 1
@@ -136,7 +137,7 @@ def display_scores(scores):
        for word in words:
            count = count + 1
            print(f"{word} ", end = "")
-           if count % 8 == 0:
+           if count % WORDS_PER_LINE == 0:
               count = 0
               print("\n                      ", end = "")
        print("")
@@ -150,7 +151,7 @@ def display_matching(words):
     if SHOW_MATCHING_WORDS and len(words) < MIN_WORDS_TO_SHOW:
         count = 0
         for word in words:
-            if count % 8 == 0:
+            if count % WORDS_PER_LINE == 0:
                 print("")
             count = count + 1
             print(f"  {word.upper()}", end = "")
@@ -169,10 +170,13 @@ hist = calculate_percent_histogram(letter_frequency(words))
 
 if len(sys.argv) > 1:
    pattern = sys.argv[1]
-   if len(pattern) != WORD_SIZE:
-      print(f"error: pattern must be {WORD_SIZE} characters")
-      sys.exit(1)
-   display_matching(find_matching(words, sys.argv[1]))
+   for pattern in sys.argv[1:]:
+       if len(pattern) != WORD_SIZE:
+          print(f"error: pattern must be {WORD_SIZE} characters")
+          sys.exit(1)
+       words = find_matching(words, pattern)
+   display_matching(words)
+
 else:
     display_summary(words, hist) 
     display_scores(score_words(words, hist))

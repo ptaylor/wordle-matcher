@@ -23,6 +23,8 @@ For example ```-tNc-``` means
 Found 3 matching words
 ```
 
+
+
 To view the words set the environment variable SHOW_MATCHING_WORDS to ```1```
 
 ```
@@ -32,6 +34,15 @@ Found 3 matching words
 
   CENTS  TONIC  TUNIC
 
+```
+
+Pass in multiple patterns to further reduce the choices:
+```
+SHOW_MATCHING_WORDS=1 ./wordle-matcher  ?tNc? ?cNt?
+
+Found 2 matching words
+
+  TONIC  TUNIC
 ```
 
 When no pattern is passed a histogram of letter frequencies and the words with the 
